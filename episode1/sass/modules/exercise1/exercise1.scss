@@ -1,0 +1,453 @@
+$sb-middle: #faf7ff;
+$sb-inner : #90e7fe;
+$sb-outer : #79e2fa;
+$sb-inner-border : #baf3fe;
+$sb-outer-border: #b7f3fe;
+
+$goku-width : 10%;
+
+$scene1-length: 5s;
+
+@mixin circle-center($width, $height:$width) {
+    width: $width;
+    height: $width;
+    position: absolute;
+    left: 50%;
+    margin-left: - $width / 2;
+}
+
+@function randomNum($min, $max) {
+    $rand: random();
+    $randomNum: $min + floor($rand * (($max - $min) + 1));
+
+    @return $randomNum;
+}
+
+
+//config for cssAnime
+
+@keyframes sceneProgress {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0%);
+    }
+}
+
+.cssanime {
+    &__scene-trigger--1 {
+      display: none;
+
+      &:checked {
+        ~ .cssanime__controls {
+  
+            label[for="scene_1"] {
+                &:before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    transform: translateX(-100%);
+                    background: #cb0047;
+                    z-index: -1;
+                    animation: sceneProgress $scene1-length linear 1 forwards;
+                }
+            }
+          }
+      }
+    }
+}
+
+
+//start of it all
+
+body {
+    background: url(../assets/namek.png) center center no-repeat;
+    background-size: cover;
+    width: 100vw;
+    height: 100vh;
+}
+
+.energy-stuff {
+    display: block;
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    transition: transform $scene1-length cubic-bezier(.05,1.34,.78,-0.35), opacity $scene1-length cubic-bezier(.05,1.34,.78,-0.35);
+}
+
+@for $i from 0 through 100 {
+    .energy-stuff-#{$i} {
+        $size: #{randomNum(3, 6)}px;
+        $positionX: #{randomNum(-700, 700)}px;
+        $positionY: #{randomNum(-700, 700)}px;
+
+        width: $size;
+        height: $size;
+        left: calc(50% - $width / 2);
+        top: calc(50% - $width / 2);
+        transform: translateX($positionX) translateY($positionY);
+        box-shadow: 0 0 5px $size transparentize($sb-middle, 0.5);
+    }
+}
+
+.cssanime__scene-trigger--1:checked {
+    ~ .goku {
+        animation: zoomGokuOut 2s ease-in-out $scene1-length 1 forwards;
+
+        .goku__spirit-bomb {
+            animation: float 3s ease-in-out infinite alternate, 
+    glow 5s ease-in-out infinite alternate, 
+    grow 8s cubic-bezier(.05,1.34,.78,-0.35) 1 forwards;
+        }
+
+        .energy-stuff {
+            transform: translateX(0) translateY(0);
+            opacity: 0;
+        }
+    }
+
+    ~ .dialogue {
+        .dialogue-box {
+            &--goku {
+                animation: fadeIn 1s ease-in-out 10.5s forwards;
+            }
+
+            &--gohan {
+                animation: fadeIn 1s ease-in-out 11s forwards;
+            }
+
+            &--piccolo {
+                animation: fadeIn 1s ease-in-out 12s forwards;
+            }
+        }
+
+        .character {
+            &--piccolo {
+                animation: scaleUp 5s linear 12s forwards; 
+            }
+
+            &--gohan {
+                animation: moveLeft 5s linear 11s forwards;
+            }
+
+            &--krillin {
+                animation: moveRight 5s linear 11s forwards;
+            }
+        }
+    }
+}
+
+.modal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    transform: translateY(-50%);
+    background-color: transparentize($color: #000000, $amount: 0.5);
+    width: 100%;
+    height: 40px;
+    overflow: hidden;
+    text-align: center;
+    padding: 10px;
+
+    &__video {
+        position: relative;
+        height: 0;
+        padding-bottom: 56.25%; // 16:9
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    }
+
+    &__title {
+        font-size: 2em;
+        color: white;
+        margin: 0;
+    }
+
+    &__description {
+        color: white;
+        margin-top: 20px;
+    }
+
+    &__button {
+        display: inline-block;
+        background: $sb-outer;
+        border-radius: 5px;
+        padding: 15px;
+        margin-top: 20px;
+    }
+}
+
+.goku {
+    position: fixed;
+    left: 40%; //20% width;
+    bottom: 100px;
+    width: $goku-width;
+    min-width: 200px;
+
+    &__body {
+        max-width: 100%;
+        height: auto;
+        animation: float 3s ease-in-out infinite alternate;
+    }
+
+    &__spirit-bomb {
+        @include circle-center(150px);
+        display: inline-block;
+        top: -400px;
+        
+        background-image: radial-gradient($sb-middle 0%, $sb-middle 17%, $sb-inner 28%, $sb-inner 70%, $sb-outer 100%);
+        border: 10px solid $sb-inner-border;
+        border-radius: 100%;
+        text-indent: -9999px;
+        word-wrap: nowrap;
+        
+        animation: float 8s ease-in-out infinite alternate, 
+        glow 5s ease-in-out infinite alternate;
+        box-shadow: 0 0 14px 2px $sb-inner-border, 0 0 9px 10px $sb-outer-border;
+    }
+
+    &__spirit-bomb-energy {
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        left: 50%;
+        margin-left: -5px;
+        top: -200px;
+        animation: opacityChange 2s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes opacityChange {
+    from {
+         opacity: 0.75
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes grow {
+    0% {
+        @include circle-center(150px);
+    }
+    60% {
+        @include circle-center(300px);
+    }
+    80% {
+        @include circle-center(300px); 
+        top: -400px;
+    }
+    100% {
+        @include circle-center(600px);
+        top: -800px;
+    }
+}
+
+@keyframes float {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-15px);
+    }
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 14px 10px transparentize($sb-outer-border, 0.4), 0 0 9px 5px transparentize($sb-inner-border, 0.4);
+    }
+    to {
+        box-shadow: 0 0 20px 15px transparentize($sb-outer-border, 0.4), 0 0 9px 8px transparentize($sb-inner-border, 0.4);
+    }
+}
+
+@keyframes energyGlow {
+    from {
+        box-shadow: 0 0 14px 10px transparentize($sb-outer-border, 0.4), 0 0 9px 5px transparentize($sb-inner-border, 0.4);
+    }
+    to {
+        box-shadow: 0 0 20px 15px transparentize($sb-outer-border, 0.4), 0 0 9px 8px transparentize($sb-inner-border, 0.4);
+    }
+    
+}
+
+@keyframes zoomGokuOut {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(0.6);
+    }
+}
+
+// Dialogue
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.dialogue {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.dialogue-box {
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+
+    h2 {
+        font-weight: 900;
+        text-transform: uppercase;
+    }
+
+    &--goku {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 50%;
+        background: white;
+        bottom: 0;
+        border-right: 20px solid black;
+        background: url(../assets/goku-spirit-bomb.png) center center no-repeat;
+        background-size: cover;
+
+        h2 {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            bottom: 50px;
+            color: black;
+            font-size: 79px;
+            color: white;
+            text-shadow: 1px 1px 3px black;
+        }
+    }
+
+    &--gohan {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        height: 50%;
+        right: 0;
+        border-bottom: 20px solid black;
+        background: #b5d873;
+        background: url(../assets/namek-bg2.jpg) center center no-repeat;
+        background-size: 120%;
+
+        h2 {
+            position: absolute;
+            z-index: 10;
+            right: 20px;
+            bottom: 20px;
+            color: black;
+            font-size: 79px;
+            color: white;
+            text-shadow: 1px 1px 3px black;
+        }
+    }
+
+    &--piccolo {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        height: 50%;
+        right: 0;
+        background: #b5d873;
+        background: url(../assets/namek-bg2.jpg) center center no-repeat;
+        background-size: 140%;
+
+        h2 {
+            position: absolute;
+            z-index: 10;
+            right: 20px;
+            top: 20px;
+            color: black;
+            font-size: 79px;
+            color: white;
+            text-shadow: 1px 1px 3px black;
+        }
+    }
+}
+
+.character {
+    display: block;
+    width: 200px;
+
+    &--gohan {
+        width: 45%;
+        position: relative;
+        top: 30px;
+        left: 5vh;
+        z-index: 2;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    &--krillin {
+        width: 45%;
+        position: relative;
+        top: 80px;
+        left: 5vh;
+        z-index: 2;
+        display: inline-block;
+        vertical-align: top;      
+    }
+
+    &--piccolo {
+        width: 45%;
+        position: relative;
+        top: 80px;
+        left: 5vh;
+        z-index: 2;
+        display: inline-block;
+        vertical-align: top;       
+    }
+}
+
+@keyframes scaleUp {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.2);
+    }
+}
+
+@keyframes moveRight {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(10%);
+    }
+}
+
+@keyframes moveLeft {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-10%);
+    }
+}
+
+

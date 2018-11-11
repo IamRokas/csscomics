@@ -1,0 +1,140 @@
+//system
+@import "core/variables";
+@import "core/mixins";
+@import "core/animations";
+@import "base";
+@import "layout";
+
+//main
+
+@import "modules/exercise1/exercise1";
+
+@import url('https://fonts.googleapis.com/css?family=Spectral:300,400,500,700&subset=latin-ext');
+
+body {
+  font-family: 'Spectral', serif;
+}
+
+.cssanime {
+  &__scene-trigger {
+    display: none;
+
+    &--0 {
+      &:checked {
+        ~ .cssanime__controls {
+          label {
+            &:first-of-type {
+              background-color: #000000;
+            }
+          }
+        }
+      }
+    }
+
+    @for $i from 0 through 5 {
+      &--#{$i} {
+        &:checked {
+          ~ .cssanime__controls {
+  
+            label[for="scene_#{$i}"] {
+              //background-color: #000000;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &__controls {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    z-index: 100;
+    border-bottom: 1px solid lighten(#3a3a3a, 15%);
+    background-color: #3a3a3a;
+
+    label {
+      position: relative;
+      cursor: pointer;
+      flex-grow: 1;
+      display: block;
+      height: 40px;
+      color: white;
+      line-height: 40px;
+      text-align: center;
+      border-left: 1px solid lighten(#3a3a3a, 15%);
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+      overflow: hidden;
+
+      &:before {
+        content: "";
+      }
+
+      &:hover {
+        background-color: transparentize(white, 0.9);
+      }
+
+      + label {
+        
+      }
+    }
+  }
+
+  &__episode {
+    &__title {
+      font-size: 16px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    &__description {
+      font-size: 14px;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    &__button {
+      color: #cb0047;
+      text-decoration: none;
+    }
+
+    &-info {
+      > input {
+        display: none;
+
+        &:checked {
+
+          + label {
+            background: black;
+          }
+
+          ~ .cssanime__episode-info-box {
+            display: block;
+          }
+        }
+      }
+
+      &__trigger {
+        display: block;
+        width: 40px;
+        height: 40px;
+      }
+
+      &-box {
+        position: absolute;
+        width: 300px;
+        padding: 20px;
+        background: #1b1b1b;
+        top: 40px;
+        color: white;
+        display: none;
+        border: 1px solid #606060;
+      }
+    }
+  }
+}
