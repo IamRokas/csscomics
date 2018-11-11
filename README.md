@@ -1,1 +1,1 @@
-# cssanime
+# CSSComics (CSSC)
